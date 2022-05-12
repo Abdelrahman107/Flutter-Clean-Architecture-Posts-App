@@ -3,6 +3,7 @@ import 'package:posts_app/core/errors/exceptions.dart';
 import 'package:posts_app/core/network/network_info.dart';
 import 'package:posts_app/features/posts/data/datasources/posts_local_data_source.dart';
 import 'package:posts_app/features/posts/data/datasources/posts_remote_data_source.dart';
+import 'package:posts_app/features/posts/data/models/post_model.dart';
 import 'package:posts_app/features/posts/domain/entities/post_entity.dart';
 import 'package:posts_app/core/errors/failures.dart';
 import 'package:dartz/dartz.dart';
@@ -38,9 +39,10 @@ class PostsRepositoryImpl implements PostsRepository {
 
   @override
   Future<Either<Failure, Unit>> addPost(PostEntity post) async {
+    PostModel pm = PostModel(body: post.body, id: post.id, title: post.title);
     if (await networkInfo.isConnected) {
       try {
-        await remoteDataSource.addPost(post);
+        await remoteDataSource.addPost(pm);
         return const Right(unit);
       } on ServerException {
         return Left(ServerFailure());
@@ -66,9 +68,10 @@ class PostsRepositoryImpl implements PostsRepository {
 
   @override
   Future<Either<Failure, Unit>> updatePost(PostEntity post) async {
+    PostModel pm = PostModel(body: post.body, id: post.id, title: post.title);
     if (await networkInfo.isConnected) {
       try {
-        await remoteDataSource.updatePost(post);
+        await remoteDataSource.updatePost(pm);
         return const Right(unit);
       } on ServerException {
         return Left(ServerFailure());
