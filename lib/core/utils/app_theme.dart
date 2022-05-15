@@ -20,7 +20,6 @@ final appTheme = ThemeData(
     ),
     inputDecorationTheme: InputDecorationTheme(
         floatingLabelStyle: TextStyle(color: primaryColor),
-        iconColor: secondaryColor,
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: secondaryColor),
           borderRadius: BorderRadius.circular(8),
