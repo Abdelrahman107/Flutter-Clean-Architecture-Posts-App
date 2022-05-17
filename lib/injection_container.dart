@@ -24,19 +24,21 @@ Future<void> init() async {
   sl.registerFactory(() => PostsBloc(getAllPostsUseCase: sl()));
   sl.registerFactory(() => AddUpdateDeletePostBloc(
       addPostUseCase: sl(), deletePostUseCase: sl(), updatePostUseCase: sl()));
+
 // UseCases
   sl.registerLazySingleton(() => GetAllPostsUseCase(sl()));
   sl.registerLazySingleton(() => AddPostUseCase(sl()));
   sl.registerLazySingleton(() => DeletePostUseCase(sl()));
   sl.registerLazySingleton(() => UpdatePostUseCase(sl()));
+
 // Repository
   sl.registerLazySingleton<PostsRepository>(() => PostsRepositoryImpl(
       localDataSource: sl(), networkInfo: sl(), remoteDataSource: sl()));
 
 // Data sources
-  sl.registerFactory<PostsLocalDataSource>(
+  sl.registerLazySingleton<PostsLocalDataSource>(
       () => PostsLocalDataSourceImpl(sharedPreferences: sl()));
-  sl.registerFactory<PostsRemoteDataSource>(
+  sl.registerLazySingleton<PostsRemoteDataSource>(
       () => PostsRemoteDataSourceImpl(client: sl()));
 
 // Core
@@ -47,5 +49,5 @@ Future<void> init() async {
   final sharedPreferences = await SharedPreferences.getInstance();
   sl.registerLazySingleton(() => http.Client());
   sl.registerLazySingleton(() => sharedPreferences);
-  sl.registerFactory(() => InternetConnectionChecker());
+  sl.registerLazySingleton(() => InternetConnectionChecker());
 }
