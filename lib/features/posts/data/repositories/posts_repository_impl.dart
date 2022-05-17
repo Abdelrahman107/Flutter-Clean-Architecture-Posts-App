@@ -14,8 +14,11 @@ class PostsRepositoryImpl implements PostsRepository {
   final PostsRemoteDataSource remoteDataSource;
   final NetworkInfo networkInfo;
 
-  PostsRepositoryImpl(
-      this.localDataSource, this.remoteDataSource, this.networkInfo);
+  PostsRepositoryImpl({
+    required this.localDataSource,
+    required this.remoteDataSource,
+    required this.networkInfo,
+  });
 
   @override
   Future<Either<Failure, List<PostEntity>>> getPosts() async {

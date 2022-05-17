@@ -12,12 +12,14 @@ part 'add_update_delete_post_state.dart';
 
 class AddUpdateDeletePostBloc
     extends Bloc<AddUpdateDeletePostEvent, AddUpdateDeletePostState> {
-  AddPostUseCase addPostUseCase;
-  UpdatePostUseCase updatePostUseCase;
-  DeletePostUseCase deletePostUseCase;
+  final AddPostUseCase addPostUseCase;
+  final UpdatePostUseCase updatePostUseCase;
+  final DeletePostUseCase deletePostUseCase;
 
   AddUpdateDeletePostBloc(
-      this.addPostUseCase, this.updatePostUseCase, this.deletePostUseCase)
+      {required this.addPostUseCase,
+      required this.updatePostUseCase,
+      required this.deletePostUseCase})
       : super(AddUpdateDeletePostInitial()) {
     on<AddUpdateDeletePostEvent>((event, emit) async {
       if (event is AddPostEvent) {
