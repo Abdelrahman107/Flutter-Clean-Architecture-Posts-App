@@ -4,7 +4,7 @@ import 'package:dartz/dartz.dart';
 import 'package:posts_app/core/errors/exceptions.dart';
 import 'package:posts_app/features/posts/data/models/post_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:logger/logger.dart';
 import 'package:posts_app/core/utils/constants.dart';
 import 'package:posts_app/features/posts/domain/entities/post_entity.dart';
 
@@ -15,29 +15,33 @@ abstract class PostsLocalDataSource {
 
 class PostsLocalDataSourceImpl implements PostsLocalDataSource {
   final SharedPreferences sharedPreferences;
+  final Logger logger = Logger();
   PostsLocalDataSourceImpl({
     required this.sharedPreferences,
   });
 
   @override
-  Future<Unit> cachePosts(List<PostModel> posts) {
-    // save posts to shared preferences
-    final postsJson =
-        posts.map<Map<String, dynamic>>((post) => post.toJson()).toList();
-    sharedPreferences.setString(Constants.kPostsKey, json.encode(postsJson));
+  Future<Unit> cachePosts(List<PostModel> postModels) {
+    List postModelsToJson = postModels
+        .map<Map<String, dynamic>>((postModel) => postModel.toJson())
+        .toList();
+    sharedPreferences.setString(
+        Constants.kPostsKey, json.encode(postModelsToJson));
+    // log a message using the logger
+
     return Future.value(unit);
   }
 
   @override
   Future<List<PostModel>> getCachedPosts() {
-    // get posts from shared preferences
     final jsonString = sharedPreferences.getString(Constants.kPostsKey);
-    if (jsonString == null) {
-      final decodedPosts = json.decode(jsonString!);
-      final posts = decodedPosts
-          .map<PostModel>((post) => PostModel.fromJson(post))
+    logger.d('jsonString: $jsonString');
+    if (jsonString != null) {
+      List decodeJsonData = json.decode(jsonString);
+      List<PostModel> jsonToPostModels = decodeJsonData
+          .map<PostModel>((jsonPostModel) => PostModel.fromJson(jsonPostModel))
           .toList();
-      return Future.value(posts);
+      return Future.value(jsonToPostModels);
     } else {
       throw EmptyCacheException();
     }

@@ -16,38 +16,42 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 final sl = GetIt.instance;
 
-// init
 Future<void> init() async {
-//! Feture Posts
+//! Features - posts
 
-// Blocs
+// Bloc
+
   sl.registerFactory(() => PostsBloc(getAllPostsUseCase: sl()));
   sl.registerFactory(() => AddUpdateDeletePostBloc(
-      addPostUseCase: sl(), deletePostUseCase: sl(), updatePostUseCase: sl()));
+      addPostUseCase: sl(), updatePostUseCase: sl(), deletePostUseCase: sl()));
 
-// UseCases
+// Usecases
+
   sl.registerLazySingleton(() => GetAllPostsUseCase(sl()));
   sl.registerLazySingleton(() => AddPostUseCase(sl()));
   sl.registerLazySingleton(() => DeletePostUseCase(sl()));
   sl.registerLazySingleton(() => UpdatePostUseCase(sl()));
 
 // Repository
-  sl.registerLazySingleton<PostsRepository>(() => PostsRepositoryImpl(
-      localDataSource: sl(), networkInfo: sl(), remoteDataSource: sl()));
 
-// Data sources
-  sl.registerLazySingleton<PostsLocalDataSource>(
-      () => PostsLocalDataSourceImpl(sharedPreferences: sl()));
+  sl.registerLazySingleton<PostsRepository>(() => PostsRepositoryImpl(
+      remoteDataSource: sl(), localDataSource: sl(), networkInfo: sl()));
+
+// Datasources
+
   sl.registerLazySingleton<PostsRemoteDataSource>(
       () => PostsRemoteDataSourceImpl(client: sl()));
+  sl.registerLazySingleton<PostsLocalDataSource>(
+      () => PostsLocalDataSourceImpl(sharedPreferences: sl()));
 
-// Core
-  sl.registerLazySingleton<NetworkInfo>(
-      () => networkInfoImpl(connectionChecker: sl()));
+//! Core
 
-// External
+  sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
+
+//! External
+
   final sharedPreferences = await SharedPreferences.getInstance();
-  sl.registerLazySingleton(() => http.Client());
   sl.registerLazySingleton(() => sharedPreferences);
+  sl.registerLazySingleton(() => http.Client());
   sl.registerLazySingleton(() => InternetConnectionChecker());
 }
