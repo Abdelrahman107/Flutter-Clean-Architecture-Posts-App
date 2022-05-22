@@ -23,10 +23,10 @@ class AddUpdateDeletePostBloc
       : super(AddUpdateDeletePostInitial()) {
     on<AddUpdateDeletePostEvent>((event, emit) async {
       if (event is AddPostEvent) {
-        emit(PostLoading());
+        emit(AddUpdatePostLoading());
         final FailureOrUnit = await addPostUseCase(event.post);
         FailureOrUnit.fold(
-          (failure) => emit(PostError(
+          (failure) => emit(AddUpdatePostError(
               message: failure.runtimeType == ServerFailure
                   ? "Server Failure"
                   : failure.runtimeType == CacheFailure
@@ -35,13 +35,13 @@ class AddUpdateDeletePostBloc
                           ? "No Internet Failure"
                           : "Unexpected Error, Please Try Again")),
           (unit) =>
-              emit(const PostLoaded(message: Constants.SUCCESS_ADD_ACTION)),
+              emit(AddUpdatePostMessage(message: Constants.SUCCESS_ADD_ACTION)),
         );
       } else if (event is UpdatePostEvent) {
-        emit(PostLoading());
+        emit(AddUpdatePostLoading());
         final FailureOrUnit = await updatePostUseCase(event.post);
         FailureOrUnit.fold(
-          (failure) => emit(PostError(
+          (failure) => emit(AddUpdatePostError(
               message: failure.runtimeType == ServerFailure
                   ? "Server Failure"
                   : failure.runtimeType == CacheFailure
@@ -49,14 +49,14 @@ class AddUpdateDeletePostBloc
                       : failure.runtimeType == NoInternetFailure
                           ? "No Internet Failure"
                           : "Unexpected Error, Please Try Again")),
-          (_) =>
-              emit(const PostLoaded(message: Constants.SUCCESS_UPDATE_ACTION)),
+          (_) => emit(
+              AddUpdatePostMessage(message: Constants.SUCCESS_UPDATE_ACTION)),
         );
       } else if (event is DeletePostEvent) {
-        emit(PostLoading());
+        emit(AddUpdatePostLoading());
         final FailureOrUnit = await deletePostUseCase(event.postId);
         FailureOrUnit.fold(
-          (failure) => emit(PostError(
+          (failure) => emit(AddUpdatePostError(
               message: failure.runtimeType == ServerFailure
                   ? "Server Failure"
                   : failure.runtimeType == CacheFailure
@@ -64,8 +64,8 @@ class AddUpdateDeletePostBloc
                       : failure.runtimeType == NoInternetFailure
                           ? "No Internet Failure"
                           : "Unexpected Error, Please Try Again")),
-          (unit) =>
-              emit(const PostLoaded(message: Constants.SUCCESS_DELETE_ACTION)),
+          (unit) => emit(
+              AddUpdatePostMessage(message: Constants.SUCCESS_DELETE_ACTION)),
         );
       }
     });
