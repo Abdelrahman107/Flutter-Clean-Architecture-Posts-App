@@ -9,14 +9,16 @@ abstract class AddUpdateDeletePostState extends Equatable {
 
 class AddUpdateDeletePostInitial extends AddUpdateDeletePostState {}
 
-class PostLoading extends AddUpdateDeletePostState {}
+class AddUpdatePostLoading extends AddUpdateDeletePostState {}
 
-class PostLoaded extends AddUpdateDeletePostState {
+class AddUpdatePostMessage extends AddUpdateDeletePostState {
   final String message;
-  const PostLoaded({required this.message});
+  AddUpdatePostMessage({
+    required this.message,
+  });
 }
 
-class PostError extends AddUpdateDeletePostState {
+class AddUpdatePostError extends AddUpdateDeletePostState {
   final String message;
-  const PostError({required this.message});
+  const AddUpdatePostError({required this.message});
 }
